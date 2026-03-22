@@ -1,17 +1,126 @@
-# 💫 About Me:
-Im currently studying at Ulyanovski University of Civil Aviation<br>Python-junior + gpt user<br>Love swimming<br>A real buzz <br>A real zaza<br>
+# CashLens
 
+CashLens is a production-like pet project for personal finance analytics with a realistic T-Bank integration strategy:
+- **TBankBusinessProvider** for official T-Bank Business OpenAPI statement sync.
+- **TBankCsvImporter** as a resilient fallback for CSV/XLSX retail statement imports.
+- Clean modular FastAPI + React architecture with analytics, forecast, insights, and goals.
 
-## 🌐 Socials:
-[![Reddit](https://img.shields.io/badge/Reddit-%23FF4500.svg?logo=Reddit&logoColor=white)](https://t.me/S18HEEsH) [![email](https://img.shields.io/badge/Email-D14836?logo=gmail&logoColor=white)](mailto:petrporokin@gmail.com) 
+## Project tree
 
-# 💻 Tech Stack:
-![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white) ![SQLite](https://img.shields.io/badge/sqlite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white) ![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white) ![Matplotlib](https://img.shields.io/badge/Matplotlib-%23ffffff.svg?style=for-the-badge&logo=Matplotlib&logoColor=black) ![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white) ![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white) ![TensorFlow](https://img.shields.io/badge/TensorFlow-%23FF6F00.svg?style=for-the-badge&logo=TensorFlow&logoColor=white) ![scikit-learn](https://img.shields.io/badge/scikit--learn-%23F7931E.svg?style=for-the-badge&logo=scikit-learn&logoColor=white) ![Airbnb](https://img.shields.io/badge/Airbnb-%23ff5a5f.svg?style=for-the-badge&logo=Airbnb&logoColor=white)
-# 📊 GitHub Stats:
-![](https://github-readme-stats.vercel.app/api?username=mavrodi228-bot&theme=radical&hide_border=false&include_all_commits=true&count_private=false)<br/>
-![](https://nirzak-streak-stats.vercel.app/?user=mavrodi228-bot&theme=radical&hide_border=false)<br/>
-![](https://github-readme-stats.vercel.app/api/top-langs/?username=mavrodi228-bot&theme=radical&hide_border=false&include_all_commits=true&count_private=false&layout=compact)
+```text
+.
+├── backend
+│   ├── alembic
+│   │   ├── env.py
+│   │   └── versions/20260322_0001_init.py
+│   ├── app
+│   │   ├── analytics
+│   │   ├── api
+│   │   ├── core
+│   │   ├── db
+│   │   ├── importers
+│   │   ├── integrations
+│   │   ├── models
+│   │   ├── recommendations
+│   │   ├── repositories
+│   │   ├── schemas
+│   │   ├── services
+│   │   └── utils
+│   ├── tests
+│   ├── Dockerfile
+│   ├── Makefile
+│   └── requirements.txt
+├── frontend
+│   ├── src
+│   │   ├── api
+│   │   ├── app
+│   │   ├── components
+│   │   ├── hooks
+│   │   ├── lib
+│   │   ├── pages
+│   │   └── types
+│   ├── Dockerfile
+│   └── package.json
+├── docker-compose.yml
+└── Makefile
+```
 
----
-[![](https://visitcount.itsvg.in/api?id=mavrodi228-bot&icon=0&color=0)](https://visitcount.itsvg.in)
+## Backend architecture
 
+- **FastAPI + SQLAlchemy 2.0 + Alembic + PostgreSQL**.
+- Provider-based integration layer for bank sync.
+- Import pipeline for CSV/XLSX with format detection, normalization, and deduplication.
+- Rule-based categorization, recurring detection, recommendations, forecast, and custom Financial Stability Score.
+
+## API endpoints
+
+- `GET /api/health`
+- `GET /api/dashboard/summary`
+- `GET /api/dashboard/charts/monthly`
+- `GET /api/transactions`
+- `POST /api/transactions/import/csv`
+- `POST /api/transactions/import/xlsx`
+- `PATCH /api/transactions/{id}/category`
+- `POST /api/integrations/tbank-business/sync`
+- `GET /api/categories`
+- `GET /api/analytics/overview`
+- `GET /api/analytics/categories`
+- `GET /api/analytics/recurring`
+- `GET /api/analytics/forecast`
+- `GET /api/goals`
+- `POST /api/goals`
+- `PATCH /api/goals/{id}`
+- `GET /api/recommendations`
+- `GET /api/settings/bank-connections`
+- `POST /api/settings/bank-connections`
+
+## Local development
+
+### Backend
+
+```bash
+cd backend
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+alembic upgrade head
+python -m app.db.seed_demo
+uvicorn app.main:app --reload
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### Full stack with Docker
+
+```bash
+make up
+```
+
+## T-Bank configuration
+
+Set the following environment variables in `backend/.env` for the official business provider:
+
+- `T_BANK_BUSINESS_BASE_URL`
+- `T_BANK_BUSINESS_TOKEN`
+- `T_BANK_BUSINESS_ACCOUNT_ID`
+- `T_BANK_BUSINESS_COMPANY_ID`
+- `ENCRYPTION_KEY`
+
+If the official business API is not available for the use case, use the CSV/XLSX import flow. The app intentionally does **not** use any private or undocumented retail banking APIs.
+
+## Demo data
+
+`python -m app.db.seed_demo` inserts a salary, housing, groceries, subscriptions, taxi, marketplaces, and a sample goal so the dashboard is populated on first run.
+
+## Testing
+
+```bash
+cd backend && PYTHONPATH=. pytest
+cd frontend && npm run build
+```
